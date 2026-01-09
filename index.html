@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hogwarts Usulü Futbol Turnuvası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* --- TEMA DEĞİŞKENLERİ --- */
+        :root {
+            --bg-color: #f0e6d2;
+            --bg-pattern: url('https://www.transparenttextures.com/patterns/aged-paper.png');
+            --text-color: #3e2723;
+            --container-bg: #fffef8;
+            --accent-color: #740001;
+            --secondary-accent: #d3a625;
+            --border-style: 3px double var(--secondary-accent);
+            --shadow: 0 5px 15px rgba(116, 0, 1, 0.2);
+            --bracket-line-color: #b89f7a;
+            --weather-bg: #e6dfc8;
+        }
+
+        body.dark-theme {
+            --bg-color: #1a1a2a;
+            --bg-pattern: url('https://www.transparenttextures.com/patterns/dark-wall.png');
+            --text-color: #e0e0e0;
+            --container-bg: #2c2c3a;
+            --accent-color: #1a472a;
+            --secondary-accent: #aaaaaa;
+            --border-style: 3px groove var(--secondary-accent);
+            --shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+            --bracket-line-color: #4a4a5a;
+            --weather-bg: #222233;
+        }
+
+        /* --- GENEL --- */
+        body {
+            font-family: 'Crimson Text', serif;
+            background-color: var(--bg-color);
+            background-image: var(--bg-pattern);
+            margin: 0; padding: 20px;
+            color: var(--text-color);
+            transition: all 0.5s ease;
+            min-height: 95vh;
+        }
+
+        h1, h2, h3, .header-countdown #match-title, .next-match-title {
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .main-container { max-width: 1200px; margin: 40px auto; }
+
+        /* --- BUTON --- */
+        .theme-toggle-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: var(--container-bg); border: var(--border-style);
+            color: var(--text-color); padding: 10px 15px; cursor: pointer;
+            font-family: 'Cinzel Decorative', cursive; border-radius: 30px;
+            box-shadow: var(--shadow); transition: transform 0.3s; z-index: 100;
+        }
+        .theme-toggle-btn:hover { transform: scale(1.05); }
+
+        /* --- ANA HEADER (MEVCUT) --- */
+        .header-countdown {
+            background: var(--container-bg);
+            border: var(--border-style);
+            padding: 30px; text-align: center;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px; /* Altındaki widget ile arasını biraz açtık */
+            position: relative; overflow: hidden;
+        }
+        .header-countdown::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #match-title { font-size: 2rem; margin-bottom: 10px; color: var(--accent-color); text-transform: uppercase; }
+        #timer { font-size: 3rem; font-weight: bold; font-family: 'Cinzel Decorative', cursive; }
+
+        /* --- YENİ WIDGET: SIRADAKİ MAÇ & HAVA DURUMU --- */
+        .next-match-widget {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            background: var(--container-bg);
+            border: var(--border-style);
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .widget-section {
+            flex: 1;
+            padding: 20px;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Sol Taraf: Maç Bilgisi */
+        .widget-section.match-info {
+            border-right: 1px dashed var(--bracket-line-color);
+        }
+        
+        /* Sağ Taraf: Hava Durumu */
+        .widget-section.weather-info {
+            background-color: var(--weather-bg); /* Hafif ton farkı */
+        }
+
+        .nm-label {
+            font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--secondary-accent); margin-bottom: 10px; font-weight: bold;
+        }
+
+        .nm-teams {
+            font-size: 1.5rem; color: var(--text-color); margin-bottom: 5px; font-weight: bold;
+        }
+
+        .nm-timer {
+            font-size: 1.8rem; color: var(--accent-color); font-family: 'Cinzel Decorative';
+        }
+
+        .weather-display {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+        }
+
+        .weather-icon { font-size: 3rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+
+        .weather-details { text-align: left; }
+        .weather-temp { font-size: 1.8rem; font-weight: bold; color: var(--text-color); }
+        .weather-desc { font-style: italic; opacity: 0.8; }
+
+        /* Mobilde çizgi kaldırma ve alt alta alma */
+        @media (max-width: 768px) {
+            .widget-section.match-info { border-right: none; border-bottom: 1px dashed var(--secondary-accent); }
+        }
+
+        /* --- TURNUVA AĞACI --- */
+        .bracket-title { text-align: center; color: var(--accent-color); font-size: 2.5rem; margin-bottom: 30px; margin-top: 40px; }
+        .tournament-container { display: flex; justify-content: space-around; overflow-x: auto; padding-bottom: 20px; }
+        .bracket-column { display: flex; flex-direction: column; justify-content: space-around; height: 550px; position: relative; }
+        .bracket-column::after { content: ''; position: absolute; right: -20px; top: 10%; height: 80%; border-right: 2px dashed var(--bracket-line-color); z-index: -1; }
+        #finals::after { display: none; }
+
+        .matchup {
+            background: var(--container-bg); border: 2px solid var(--bracket-line-color);
+            border-top: 4px solid var(--accent-color); border-radius: 4px;
+            width: 200px; padding: 12px; box-shadow: var(--shadow); margin: 15px 0; position: relative;
+        }
+        .team { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted var(--bracket-line-color); }
+        .team:last-child { border-bottom: none; }
+        .team img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--secondary-accent); margin-right: 10px;}
+        .score { font-weight: bold; color: var(--accent-color); font-family: 'Cinzel Decorative'; }
+
+        /* --- FOOTER --- */
+        .gazette-footer { margin-top: 60px; text-align: center; border-top: 4px double var(--text-color); padding-top: 20px; font-style: italic; position: relative; }
+        .gazette-stamp {
+            width: 100px; height: 100px; border: 3px dotted var(--accent-color); border-radius: 50%;
+            position: absolute; top: -50px; right: 20px; display: flex; align-items: center; justify-content: center;
+            transform: rotate(-15deg); color: var(--accent-color); font-weight: bold; font-size: 0.8rem;
+            background: rgba(255,255,255,0.1); box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle-btn" onclick="toggleTheme()"><span id="theme-icon">✨ Nox (Karanlık Mod)</span></button>
+
+    <div class="main-container">
+        
+        <div class="header-countdown">
+            <div id="match-title">YÜKLENİYOR...</div>
+            <div id="timer">00:00:00:00</div>
+        </div>
+
+        <div class="next-match-widget">
+            
+            <div class="widget-section match-info">
+                <div class="nm-label">⚡ SIRADAKİ DÜELLO ⚡</div>
+                <div class="nm-teams" id="nm-teams">Yükleniyor...</div>
+                <div class="nm-timer" id="nm-timer">--:--:--</div>
+                <div style="font-size: 0.9rem; margin-top:5px; opacity:0.8;" id="nm-location">Konum Bekleniyor</div>
+            </div>
+
+            <div class="widget-section weather-info">
+                <div class="nm-label">🔮 SAHA RAPORU</div>
+                <div class="weather-display">
+                    <div class="weather-icon" id="w-icon">☁️</div>
+                    <div class="weather-details">
+                        <div class="weather-temp" id="w-temp">--°C</div>
+                        <div class="weather-desc" id="w-desc">Bilinmiyor</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="bracket-title">⚜️ Büyücülük Turnuva Tablosu ⚜️</h2>
+
+        <div class="tournament-container">
+            <div class="bracket-column" id="quarter-finals"></div>
+            <div class="bracket-column" id="semi-finals"></div>
+            <div class="bracket-column" id="finals"></div>
+        </div>
+
+        <footer class="gazette-footer">
+            <p>Bu etkinlik, Sihir Bakanlığı Büyücü Oyunları ve Sporları Dairesi tarafından onaylanmıştır.</p>
+            <div class="gazette-stamp">BAKANLIK<br>ONAYLI<br>✓</div>
+        </footer>
+    </div>
+
+    <script>
+        /* ==========================================
+           AYARLAR: WIDGET'LARI BURADAN YÖNET
+           ========================================== */
+        
+        const AYARLAR = {
+            // ANA BAŞLIK AYARLARI
+            etkinlikAdi: "⚡ ATEŞ KADEHİ FİNALİ ⚡",
+            hedefTarih: "Oct 31, 2025 19:00:00", 
+
+            // --- YENİ WIDGET AYARLARI (BURAYI DÜZENLE) ---
+            sonrakiMac: {
+                takimlar: "Gryffindor vs Slytherin", // Kim oynuyor?
+                tarih: "Jan 15, 2026 20:45:00",       // Maç ne zaman?
+                yer: "Quidditch Sahası",              // Nerede?
+                
+                // Hava Durumu Seçenekleri: "gunesli", "yagmurlu", "karlı", "bulutlu", "firtina", "gece"
+                havaDurumu: "yagmurlu", 
+                sicaklik: "12°C"
+            },
+
+            // TURNUVA TAKIMLARI
+            qf1: { t1: ["Gryffindor", "https://via.placeholder.com/30/740001/FFFFFF?text=G", "3"], t2: ["Hufflepuff", "https://via.placeholder.com/30/FFD700/000000?text=H", "1"] },
+            qf2: { t1: ["Ravenclaw", "https://via.placeholder.com/30/0E1A40/FFFFFF?text=R", "2"], t2: ["Slytherin", "https://via.placeholder.com/30/1A472A/FFFFFF?text=S", "0"] },
+            qf3: { t1: ["Beauxbatons", "https://via.placeholder.com/30/87CEEB/000000?text=B", "1"], t2: ["Durmstrang", "https://via.placeholder.com/30/8B0000/FFFFFF?text=D", "2"] },
+            qf4: { t1: ["M. of Magic", "https://via.placeholder.com/30/555555/FFFFFF?text=M", "0"], t2: ["Gringotts", "https://via.placeholder.com/30/D4AF37/000000?text=G", "1"] },
+            sf1: { t1: ["Gryffindor", "https://via.placeholder.com/30/740001/FFFFFF?text=G", "-"], t2: ["Ravenclaw", "https://via.placeholder.com/30/0E1A40/FFFFFF?text=R", "-"] },
+            sf2: { t1: ["Durmstrang", "https://via.placeholder.com/30/8B0000/FFFFFF?text=D", "-"], t2: ["Gringotts", "https://via.placeholder.com/30/D4AF37/000000?text=G", "-"] },
+            final: { t1: ["???", "", ""], t2: ["???", "", ""] }
+        };
+
+        /* ==========================================
+           SİSTEM KODLARI
+           ========================================== */
+
+        // 1. ANA GERİ SAYIM
+        function startMainCountdown() {
+            document.getElementById("match-title").innerText = AYARLAR.etkinlikAdi;
+            const countDate = new Date(AYARLAR.hedefTarih).getTime();
+            
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const gap = countDate - now;
+                updateTimerDisplay("timer", gap, "⚠️ TURNUVA BAŞLADI ⚠️", timer);
+            }, 1000);
+        }
+
+        // 2. SIRADAKİ MAÇ GERİ SAYIMI (WIDGET)
+        function startNextMatchWidget() {
+            const mac = AYARLAR.sonrakiMac;
+            document.getElementById("nm-teams").innerText = mac.takimlar;
+            document.getElementById("nm-location").innerText = "📍 " + mac.yer;
+            
+            // Hava Durumu Ayarı
+            setWeather(mac.havaDurumu, mac.sicaklik);
+
+            const countDate = new Date(mac.tarih).getTime();
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const gap = countDate - now;
+                updateTimerDisplay("nm-timer", gap, "MAÇ OYNANIYOR", timer);
+            }, 1000);
+        }
+
+        // Yardımcı Zamanlayıcı Fonksiyonu
+        function updateTimerDisplay(elementId, gap, finishedText, intervalVar) {
+            const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
+            
+            if (gap < 0) {
+                document.getElementById(elementId).innerText = finishedText;
+                clearInterval(intervalVar);
+            } else {
+                const d = Math.floor(gap / day);
+                const h = Math.floor((gap % day) / hour);
+                const m = Math.floor((gap % hour) / minute);
+                const s = Math.floor((gap % minute) / second);
+                // Eğer gün 0 ise sadece saat gösterelim
+                if(d > 0) {
+                    document.getElementById(elementId).innerText = `${d}G ${h}S ${m}D ${s}SN`;
+                } else {
+                    document.getElementById(elementId).innerText = `${h}S ${m}D ${s}SN`;
+                }
+            }
+        }
+
+        // Hava Durumu İkon Ayarlayıcı
+        function setWeather(condition, temp) {
+            const iconEl = document.getElementById("w-icon");
+            const descEl = document.getElementById("w-desc");
+            const tempEl = document.getElementById("w-temp");
+            
+            tempEl.innerText = temp;
+
+            let icon = "☁️";
+            let text = "Bulutlu";
+
+            switch(condition.toLowerCase()) {
+                case "gunesli": icon = "☀️"; text = "Açık ve Güneşli"; break;
+                case "yagmurlu": icon = "🌧️"; text = "Sağanak Yağış"; break;
+                case "karli": icon = "❄️"; text = "Kar Yağışı"; break;
+                case "firtina": icon = "⚡"; text = "Şimşekli Fırtına"; break;
+                case "gece": icon = "🌙"; text = "Açık Gece"; break;
+                case "sisli": icon = "🌫️"; text = "Yoğun Sis"; break;
+            }
+
+            iconEl.innerText = icon;
+            descEl.innerText = text;
+        }
+
+        function createMatch(data) {
+            const img1 = data.t1[1] ? data.t1[1] : 'https://via.placeholder.com/30/cccccc/000000?text=?';
+            const img2 = data.t2[1] ? data.t2[1] : 'https://via.placeholder.com/30/cccccc/000000?text=?';
+            return `
+                <div class="matchup">
+                    <div class="team"><img src="${img1}"><span class="team-name">${data.t1[0]}</span><span class="score">${data.t1[2]}</span></div>
+                    <div class="team"><img src="${img2}"><span class="team-name">${data.t2[0]}</span><span class="score">${data.t2[2]}</span></div>
+                </div>`;
+        }
+
+        function setupBracket() {
+            document.getElementById('quarter-finals').innerHTML = createMatch(AYARLAR.qf1) + createMatch(AYARLAR.qf2) + createMatch(AYARLAR.qf3) + createMatch(AYARLAR.qf4);
+            document.getElementById('semi-finals').innerHTML = createMatch(AYARLAR.sf1) + createMatch(AYARLAR.sf2);
+            document.getElementById('finals').innerHTML = createMatch(AYARLAR.final);
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            const btnLabel = document.getElementById('theme-icon');
+            btnLabel.innerText = document.body.classList.contains('dark-theme') ? '☀️ Lumos (Aydınlık Mod)' : '✨ Nox (Karanlık Mod)';
+        }
+
+        // Başlat
+        startMainCountdown();
+        startNextMatchWidget();
+        setupBracket();
+    </script>
+</body>
+</html>
