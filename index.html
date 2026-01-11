@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hogwarts Usulü Futbol Turnuvası</title>
+    <title>Hogwarts Futbol Turnuvası</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         /* --- TEMA DEĞİŞKENLERİ --- */
@@ -18,6 +18,7 @@
             --shadow: 0 5px 15px rgba(116, 0, 1, 0.2);
             --bracket-line-color: #b89f7a;
             --weather-bg: #e6dfc8;
+            --card-bg: #ffffff;
         }
 
         body.dark-theme {
@@ -31,6 +32,7 @@
             --shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
             --bracket-line-color: #4a4a5a;
             --weather-bg: #222233;
+            --card-bg: #353545;
         }
 
         /* --- GENEL --- */
@@ -44,11 +46,21 @@
             min-height: 95vh;
         }
 
-        h1, h2, h3, .header-countdown #match-title, .next-match-title {
+        h1, h2, h3, .header-countdown #match-title, .next-match-title, .team-card h3 {
             font-family: 'Cinzel Decorative', cursive;
         }
 
-        .main-container { max-width: 1200px; margin: 40px auto; }
+        .main-container { 
+            max-width: 1200px; 
+            margin: 40px auto; 
+            opacity: 0; 
+            animation: fadeInPage 1.2s ease-out forwards; 
+        }
+
+        @keyframes fadeInPage {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
         /* --- BUTON --- */
         .theme-toggle-btn {
@@ -56,122 +68,155 @@
             background: var(--container-bg); border: var(--border-style);
             color: var(--text-color); padding: 10px 15px; cursor: pointer;
             font-family: 'Cinzel Decorative', cursive; border-radius: 30px;
-            box-shadow: var(--shadow); transition: transform 0.3s; z-index: 100;
+            box-shadow: var(--shadow); transition: all 0.3s; z-index: 100;
         }
-        .theme-toggle-btn:hover { transform: scale(1.05); }
+        .theme-toggle-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--secondary-accent); }
 
-        /* --- ANA HEADER (MEVCUT) --- */
+        /* --- HEADER & WIDGET STİLLERİ (Önceki koddan) --- */
         .header-countdown {
-            background: var(--container-bg);
-            border: var(--border-style);
-            padding: 30px; text-align: center;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px; /* Altındaki widget ile arasını biraz açtık */
-            position: relative; overflow: hidden;
+            background: var(--container-bg); border: var(--border-style);
+            padding: 30px; text-align: center; box-shadow: var(--shadow);
+            margin-bottom: 25px; position: relative; overflow: hidden; border-radius: 8px;
         }
         .header-countdown::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            animation: rotate 20s linear infinite;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 60%);
+            animation: rotate 30s linear infinite;
         }
         @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #match-title { font-size: 2rem; margin-bottom: 10px; color: var(--accent-color); text-transform: uppercase; }
+        #match-title { font-size: 2.2rem; margin-bottom: 10px; color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; }
         #timer { font-size: 3rem; font-weight: bold; font-family: 'Cinzel Decorative', cursive; }
 
-        /* --- YENİ WIDGET: SIRADAKİ MAÇ & HAVA DURUMU --- */
         .next-match-widget {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            background: var(--container-bg);
-            border: var(--border-style);
-            margin-bottom: 40px;
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            background: var(--container-bg); border: var(--border-style);
+            margin-bottom: 50px; box-shadow: var(--shadow); border-radius: 8px; overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .next-match-widget:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .widget-section { flex: 1; padding: 25px; min-width: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .widget-section.match-info { border-right: 1px dashed var(--bracket-line-color); }
+        .widget-section.weather-info { background-color: var(--weather-bg); }
+        .nm-label { font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; color: var(--secondary-accent); margin-bottom: 12px; font-weight: bold; border-bottom: 1px solid var(--bracket-line-color); padding-bottom: 5px; }
+        .nm-teams { font-size: 1.6rem; color: var(--text-color); margin-bottom: 5px; font-weight: bold; }
+        .nm-timer { font-size: 1.8rem; color: var(--accent-color); font-family: 'Cinzel Decorative'; }
+        .weather-display { display: flex; align-items: center; justify-content: center; gap: 20px; }
+        .weather-icon { font-size: 2.8rem; }
+        .weather-temp { font-size: 1.8rem; font-weight: bold; }
+
+        /* --- TURNUVA AĞACI --- */
+        .bracket-title { text-align: center; color: var(--accent-color); font-size: 2.5rem; margin-bottom: 30px; margin-top: 50px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .tournament-container { display: flex; justify-content: space-around; overflow-x: auto; padding-bottom: 20px; }
+        .bracket-column { display: flex; flex-direction: column; justify-content: space-around; height: 550px; position: relative; opacity: 0; animation: fadeInPage 1s ease-out forwards; }
+        #quarter-finals { animation-delay: 0.3s; } #semi-finals { animation-delay: 0.6s; } #finals { animation-delay: 0.9s; }
+        .bracket-column::after { content: ''; position: absolute; right: -20px; top: 10%; height: 80%; border-right: 2px dashed var(--bracket-line-color); z-index: -1; }
+        #finals::after { display: none; }
+        .matchup { background: var(--container-bg); border: 2px solid var(--bracket-line-color); border-top: 4px solid var(--accent-color); border-radius: 6px; width: 210px; padding: 15px; box-shadow: var(--shadow); margin: 15px 0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .matchup:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 20px rgba(0,0,0,0.15); border-color: var(--secondary-accent); }
+        .team { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted var(--bracket-line-color); }
+        .team:last-child { border-bottom: none; }
+        .team img { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--secondary-accent); margin-right: 12px; background: #ddd; }
+        .score { font-weight: bold; color: var(--accent-color); font-family: 'Cinzel Decorative'; font-size: 1.1rem; }
+
+        /* --- YENİ BÖLÜM: TAKIM KARTLARI --- */
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .team-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--bracket-line-color);
+            border-radius: 10px;
+            overflow: hidden;
             box-shadow: var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
         }
 
-        .widget-section {
-            flex: 1;
+        .team-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, var(--accent-color), var(--secondary-accent));
+        }
+
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-header {
             padding: 20px;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             text-align: center;
+            background-color: rgba(0,0,0,0.03);
+            border-bottom: 1px dashed var(--bracket-line-color);
         }
 
-        /* Sol Taraf: Maç Bilgisi */
-        .widget-section.match-info {
-            border-right: 1px dashed var(--bracket-line-color);
+        .card-header img {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-accent);
+            margin-bottom: 10px;
+            object-fit: cover;
+            background: #fff;
         }
+
+        .card-header h3 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 1.4rem;
+        }
+
+        /* İstatistikler Kutusu */
+        .card-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background: rgba(var(--accent-color), 0.05);
+            border-bottom: 1px dashed var(--bracket-line-color);
+        }
+
+        .stat-item { text-align: center; }
+        .stat-val { font-weight: bold; font-size: 1.2rem; color: var(--accent-color); display: block;}
+        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--secondary-accent); letter-spacing: 1px;}
+
+        /* Oyuncu Listesi */
+        .card-members { padding: 15px 20px; }
+        .member-title { font-size: 0.9rem; text-align: center; margin-bottom: 10px; opacity: 0.7; font-style: italic; }
         
-        /* Sağ Taraf: Hava Durumu */
-        .widget-section.weather-info {
-            background-color: var(--weather-bg); /* Hafif ton farkı */
+        .member-list { list-style: none; padding: 0; margin: 0; }
+        .member-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
         }
-
-        .nm-label {
-            font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase;
-            color: var(--secondary-accent); margin-bottom: 10px; font-weight: bold;
+        .member-list li::before {
+            content: '⚡'; 
+            color: var(--secondary-accent); 
+            margin-right: 10px; 
+            font-size: 0.8rem;
         }
-
-        .nm-teams {
-            font-size: 1.5rem; color: var(--text-color); margin-bottom: 5px; font-weight: bold;
-        }
-
-        .nm-timer {
-            font-size: 1.8rem; color: var(--accent-color); font-family: 'Cinzel Decorative';
-        }
-
-        .weather-display {
-            display: flex; align-items: center; justify-content: center; gap: 15px;
-        }
-
-        .weather-icon { font-size: 3rem; animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
-
-        .weather-details { text-align: left; }
-        .weather-temp { font-size: 1.8rem; font-weight: bold; color: var(--text-color); }
-        .weather-desc { font-style: italic; opacity: 0.8; }
-
-        /* Mobilde çizgi kaldırma ve alt alta alma */
-        @media (max-width: 768px) {
-            .widget-section.match-info { border-right: none; border-bottom: 1px dashed var(--secondary-accent); }
-        }
-
-        /* --- TURNUVA AĞACI --- */
-        .bracket-title { text-align: center; color: var(--accent-color); font-size: 2.5rem; margin-bottom: 30px; margin-top: 40px; }
-        .tournament-container { display: flex; justify-content: space-around; overflow-x: auto; padding-bottom: 20px; }
-        .bracket-column { display: flex; flex-direction: column; justify-content: space-around; height: 550px; position: relative; }
-        .bracket-column::after { content: ''; position: absolute; right: -20px; top: 10%; height: 80%; border-right: 2px dashed var(--bracket-line-color); z-index: -1; }
-        #finals::after { display: none; }
-
-        .matchup {
-            background: var(--container-bg); border: 2px solid var(--bracket-line-color);
-            border-top: 4px solid var(--accent-color); border-radius: 4px;
-            width: 200px; padding: 12px; box-shadow: var(--shadow); margin: 15px 0; position: relative;
-        }
-        .team { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted var(--bracket-line-color); }
-        .team:last-child { border-bottom: none; }
-        .team img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--secondary-accent); margin-right: 10px;}
-        .score { font-weight: bold; color: var(--accent-color); font-family: 'Cinzel Decorative'; }
+        .member-list li:last-child { border-bottom: none; }
 
         /* --- FOOTER --- */
-        .gazette-footer { margin-top: 60px; text-align: center; border-top: 4px double var(--text-color); padding-top: 20px; font-style: italic; position: relative; }
-        .gazette-stamp {
-            width: 100px; height: 100px; border: 3px dotted var(--accent-color); border-radius: 50%;
-            position: absolute; top: -50px; right: 20px; display: flex; align-items: center; justify-content: center;
-            transform: rotate(-15deg); color: var(--accent-color); font-weight: bold; font-size: 0.8rem;
-            background: rgba(255,255,255,0.1); box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center;
+        .gazette-footer { margin-top: 80px; text-align: center; border-top: 1px solid var(--bracket-line-color); padding-top: 30px; font-style: italic; opacity: 0.8; transition: opacity 0.3s; position: relative;}
+        .gazette-footer:hover { opacity: 1; }
+        .gazette-stamp { width: 90px; height: 90px; border: 3px solid var(--accent-color); border-radius: 50%; position: absolute; top: -45px; right: 20px; display: flex; align-items: center; justify-content: center; transform: rotate(-15deg); color: var(--accent-color); font-weight: bold; font-size: 0.75rem; background: var(--container-bg); box-shadow: 0 0 15px rgba(0,0,0,0.1); text-align: center; letter-spacing: 1px; }
+
+        @media (max-width: 768px) {
+            .widget-section.match-info { border-right: none; border-bottom: 1px dashed var(--secondary-accent); }
+            .teams-grid { grid-template-columns: 1fr; }
         }
 
     </style>
 </head>
 <body>
 
-    <button class="theme-toggle-btn" onclick="toggleTheme()"><span id="theme-icon">✨ Nox (Karanlık Mod)</span></button>
+    <button class="theme-toggle-btn" onclick="toggleTheme()"><span id="theme-icon">✨ Nox</span></button>
 
     <div class="main-container">
         
@@ -181,14 +226,12 @@
         </div>
 
         <div class="next-match-widget">
-            
             <div class="widget-section match-info">
-                <div class="nm-label">⚡ SIRADAKİ DÜELLO ⚡</div>
-                <div class="nm-teams" id="nm-teams">Yükleniyor...</div>
+                <div class="nm-label">SIRADAKİ KARŞILAŞMA</div>
+                <div class="nm-teams" id="nm-teams">...</div>
                 <div class="nm-timer" id="nm-timer">--:--:--</div>
-                <div style="font-size: 0.9rem; margin-top:5px; opacity:0.8;" id="nm-location">Konum Bekleniyor</div>
+                <div style="font-size: 0.95rem; margin-top:8px; opacity:0.8; font-style: italic;" id="nm-location">...</div>
             </div>
-
             <div class="widget-section weather-info">
                 <div class="nm-label">SAHA RAPORU</div>
                 <div class="weather-display">
@@ -201,76 +244,129 @@
             </div>
         </div>
 
-        <h2 class="bracket-title">Karşılaşma Ağacı</h2>
-
+        <h2 class="bracket-title">Turnuva Tablosu</h2>
         <div class="tournament-container">
             <div class="bracket-column" id="quarter-finals"></div>
             <div class="bracket-column" id="semi-finals"></div>
             <div class="bracket-column" id="finals"></div>
         </div>
 
+        <h2 class="bracket-title">Takım Kadroları & İstatistikler</h2>
+        <div class="teams-grid" id="teams-grid">
+            </div>
+
         <footer class="gazette-footer">
             <p>Bu etkinlik, Sihir Bakanlığı Büyücü Oyunları ve Sporları Dairesi tarafından onaylanmıştır.</p>
-            <div class="gazette-stamp">BAKANLIK<br>ONAYLI<br>✓</div>
+            <div class="gazette-stamp">BAKANLIK<br>ONAYLI</div>
         </footer>
     </div>
 
     <script>
         /* ==========================================
-           AYARLAR: WIDGET'LARI BURADAN YÖNET
+           AYARLAR: SİTE İÇERİĞİNİ BURADAN YÖNET
            ========================================== */
         
         const AYARLAR = {
-            // ANA BAŞLIK AYARLARI
-            etkinlikAdi: "HW FUTBOL TURNUVASI",
+            etkinlikAdi: "HOGWARTS FUTBOL TURNUVASI",
             hedefTarih: "Oct 31, 2025 19:00:00", 
 
-            // --- YENİ WIDGET AYARLARI (BURAYI DÜZENLE) ---
             sonrakiMac: {
-                takimlar: "Vortex Piç x Arch", // Kim oynuyor?
-                tarih: "Jan 15, 2026 20:45:00",       // Maç ne zaman?
-                yer: "Quidditch Sahası",              // Nerede?
-                
-                // Hava Durumu Seçenekleri: "gunesli", "yagmurlu", "karlı", "bulutlu", "firtina", "gece"
-                havaDurumu: "gunesli", 
-                sicaklik: "22°C"
+                takimlar: "Belirlenecek vs Belirlenecek", 
+                tarih: "Jan 15, 2026 20:45:00",       
+                yer: "Quidditch Sahası",              
+                havaDurumu: "gunesli", sicaklik: "22°C"
             },
 
-            // TURNUVA TAKIMLARI
-            qf1: { t1: ["Gryffindor", "https://via.placeholder.com/30/740001/FFFFFF?text=G", "3"], t2: ["Hufflepuff", "https://via.placeholder.com/30/FFD700/000000?text=H", "1"] },
-            qf2: { t1: ["Ravenclaw", "https://via.placeholder.com/30/0E1A40/FFFFFF?text=R", "2"], t2: ["Slytherin", "https://via.placeholder.com/30/1A472A/FFFFFF?text=S", "0"] },
-            qf3: { t1: ["Beauxbatons", "https://via.placeholder.com/30/87CEEB/000000?text=B", "1"], t2: ["Durmstrang", "https://via.placeholder.com/30/8B0000/FFFFFF?text=D", "2"] },
-            qf4: { t1: ["M. of Magic", "https://via.placeholder.com/30/555555/FFFFFF?text=M", "0"], t2: ["Gringotts", "https://via.placeholder.com/30/D4AF37/000000?text=G", "1"] },
-            sf1: { t1: ["Gryffindor", "https://via.placeholder.com/30/740001/FFFFFF?text=G", "-"], t2: ["Ravenclaw", "https://via.placeholder.com/30/0E1A40/FFFFFF?text=R", "-"] },
-            sf2: { t1: ["Durmstrang", "https://via.placeholder.com/30/8B0000/FFFFFF?text=D", "-"], t2: ["Gringotts", "https://via.placeholder.com/30/D4AF37/000000?text=G", "-"] },
-            final: { t1: ["???", "", ""], t2: ["???", "", ""] }
+            // --- YENİ: TAKIM DETAYLARI LİSTESİ ---
+            // Her takım için logo, istatistik (gol, galibiyet) ve 3 oyuncu
+            takimDetaylari: [
+                {
+                    ad: "Gryffindor",
+                    logo: "https://via.placeholder.com/60/740001/FFFFFF?text=G",
+                    gol: 5,
+                    galibiyet: 2,
+                    oyuncular: ["Harry Potter", "Ron Weasley", "Ginny Weasley"]
+                },
+                {
+                    ad: "Slytherin",
+                    logo: "https://via.placeholder.com/60/1A472A/FFFFFF?text=S",
+                    gol: 3,
+                    galibiyet: 1,
+                    oyuncular: ["Draco Malfoy", "Blaise Zabini", "Gregory Goyle"]
+                },
+                {
+                    ad: "Ravenclaw",
+                    logo: "https://via.placeholder.com/60/0E1A40/FFFFFF?text=R",
+                    gol: 4,
+                    galibiyet: 1,
+                    oyuncular: ["Cho Chang", "Luna Lovegood", "Padma Patil"]
+                },
+                {
+                    ad: "Hufflepuff",
+                    logo: "https://via.placeholder.com/60/FFD700/000000?text=H",
+                    gol: 2,
+                    galibiyet: 0,
+                    oyuncular: ["Cedric Diggory", "Hannah Abbott", "Susan Bones"]
+                },
+                {
+                    ad: "Durmstrang",
+                    logo: "https://via.placeholder.com/60/8B0000/FFFFFF?text=D",
+                    gol: 6,
+                    galibiyet: 2,
+                    oyuncular: ["Viktor Krum", "Poliakoff", "Karkaroff Jr."]
+                },
+                {
+                    ad: "Beauxbatons",
+                    logo: "https://via.placeholder.com/60/87CEEB/000000?text=B",
+                    gol: 1,
+                    galibiyet: 0,
+                    oyuncular: ["Fleur Delacour", "Gabrielle", "Maxime"]
+                },
+                {
+                    ad: "Min. of Magic",
+                    logo: "https://via.placeholder.com/60/555555/FFFFFF?text=M",
+                    gol: 0,
+                    galibiyet: 0,
+                    oyuncular: ["Kingsley", "Arthur Weasley", "Tonks"]
+                },
+                {
+                    ad: "Gringotts FC",
+                    logo: "https://via.placeholder.com/60/D4AF37/000000?text=G",
+                    gol: 2,
+                    galibiyet: 1,
+                    oyuncular: ["Griphook", "Bogrod", "Ragnok"]
+                }
+            ],
+
+            // TURNUVA AĞACI (Eşleşmeler)
+            qf1: { t1: ["Gryffindor", "", "3"], t2: ["Hufflepuff", "", "1"] },
+            qf2: { t1: ["Ravenclaw", "", "2"], t2: ["Slytherin", "", "0"] },
+            qf3: { t1: ["Beauxbatons", "", "1"], t2: ["Durmstrang", "", "2"] },
+            qf4: { t1: ["M. of Magic", "", "0"], t2: ["Gringotts", "", "1"] },
+            sf1: { t1: ["Gryffindor", "", "-"], t2: ["Ravenclaw", "", "-"] },
+            sf2: { t1: ["Durmstrang", "", "-"], t2: ["Gringotts", "", "-"] },
+            final: { t1: ["???", "", "-"], t2: ["???", "", "-"] }
         };
 
         /* ==========================================
            SİSTEM KODLARI
            ========================================== */
 
-        // 1. ANA GERİ SAYIM
         function startMainCountdown() {
             document.getElementById("match-title").innerText = AYARLAR.etkinlikAdi;
             const countDate = new Date(AYARLAR.hedefTarih).getTime();
-            
             const timer = setInterval(() => {
                 const now = new Date().getTime();
                 const gap = countDate - now;
-                updateTimerDisplay("timer", gap, "⚠️ TURNUVA BAŞLADI ⚠️", timer);
+                updateTimerDisplay("timer", gap, "TURNUVA BAŞLADI", timer);
             }, 1000);
         }
 
-        // 2. SIRADAKİ MAÇ GERİ SAYIMI (WIDGET)
         function startNextMatchWidget() {
             const mac = AYARLAR.sonrakiMac;
             document.getElementById("nm-teams").innerText = mac.takimlar;
             document.getElementById("nm-location").innerText = "📍 " + mac.yer;
-            
-            // Hava Durumu Ayarı
             setWeather(mac.havaDurumu, mac.sicaklik);
-
             const countDate = new Date(mac.tarih).getTime();
             const timer = setInterval(() => {
                 const now = new Date().getTime();
@@ -279,10 +375,8 @@
             }, 1000);
         }
 
-        // Yardımcı Zamanlayıcı Fonksiyonu
         function updateTimerDisplay(elementId, gap, finishedText, intervalVar) {
             const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
-            
             if (gap < 0) {
                 document.getElementById(elementId).innerText = finishedText;
                 clearInterval(intervalVar);
@@ -291,47 +385,77 @@
                 const h = Math.floor((gap % day) / hour);
                 const m = Math.floor((gap % hour) / minute);
                 const s = Math.floor((gap % minute) / second);
-                // Eğer gün 0 ise sadece saat gösterelim
-                if(d > 0) {
-                    document.getElementById(elementId).innerText = `${d}G ${h}S ${m}D ${s}SN`;
-                } else {
-                    document.getElementById(elementId).innerText = `${h}S ${m}D ${s}SN`;
-                }
+                if(d > 0) document.getElementById(elementId).innerText = `${d}G ${h}S ${m}D ${s}SN`;
+                else document.getElementById(elementId).innerText = `${h}S ${m}D ${s}SN`;
             }
         }
 
-        // Hava Durumu İkon Ayarlayıcı
         function setWeather(condition, temp) {
             const iconEl = document.getElementById("w-icon");
             const descEl = document.getElementById("w-desc");
-            const tempEl = document.getElementById("w-temp");
-            
-            tempEl.innerText = temp;
-
-            let icon = "☁️";
-            let text = "Bulutlu";
-
+            document.getElementById("w-temp").innerText = temp;
+            let icon = "☁️", text = "Bulutlu";
             switch(condition.toLowerCase()) {
-                case "gunesli": icon = "☀️"; text = "Açık ve Güneşli"; break;
-                case "yagmurlu": icon = "🌧️"; text = "Sağanak Yağış"; break;
-                case "karli": icon = "❄️"; text = "Kar Yağışı"; break;
-                case "firtina": icon = "⚡"; text = "Şimşekli Fırtına"; break;
+                case "gunesli": icon = "☀️"; text = "Güneşli"; break;
+                case "yagmurlu": icon = "🌧️"; text = "Yağmurlu"; break;
+                case "karli": icon = "❄️"; text = "Karlı"; break;
+                case "firtina": icon = "⚡"; text = "Fırtına"; break;
                 case "gece": icon = "🌙"; text = "Açık Gece"; break;
-                case "sisli": icon = "🌫️"; text = "Yoğun Sis"; break;
+                case "sisli": icon = "🌫️"; text = "Sisli"; break;
             }
-
-            iconEl.innerText = icon;
-            descEl.innerText = text;
+            iconEl.innerText = icon; descEl.innerText = text;
         }
 
         function createMatch(data) {
-            const img1 = data.t1[1] ? data.t1[1] : 'https://via.placeholder.com/30/cccccc/000000?text=?';
-            const img2 = data.t2[1] ? data.t2[1] : 'https://via.placeholder.com/30/cccccc/000000?text=?';
-            return `
-                <div class="matchup">
+            const ph = 'https://via.placeholder.com/30/cccccc/000000?text=?';
+            const img1 = data.t1[1] ? data.t1[1] : ph;
+            const img2 = data.t2[1] ? data.t2[1] : ph;
+            return `<div class="matchup">
                     <div class="team"><img src="${img1}"><span class="team-name">${data.t1[0]}</span><span class="score">${data.t1[2]}</span></div>
                     <div class="team"><img src="${img2}"><span class="team-name">${data.t2[0]}</span><span class="score">${data.t2[2]}</span></div>
                 </div>`;
+        }
+
+        // YENİ: Takım Kartlarını Oluşturma Fonksiyonu
+        function setupTeams() {
+            const container = document.getElementById('teams-grid');
+            let htmlContent = '';
+            
+            AYARLAR.takimDetaylari.forEach(takim => {
+                // Oyuncu listesini oluştur
+                let oyuncuListesiHTML = '';
+                takim.oyuncular.forEach(oyuncu => {
+                    oyuncuListesiHTML += `<li>${oyuncu}</li>`;
+                });
+
+                // Kart HTML'i
+                htmlContent += `
+                    <div class="team-card">
+                        <div class="card-header">
+                            <img src="${takim.logo}" alt="${takim.ad}">
+                            <h3>${takim.ad}</h3>
+                        </div>
+                        <div class="card-stats">
+                            <div class="stat-item">
+                                <span class="stat-val">${takim.gol}</span>
+                                <span class="stat-label">Gol</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-val">${takim.galibiyet}</span>
+                                <span class="stat-label">Galibiyet</span>
+                            </div>
+                        </div>
+                        <div class="card-members">
+                            <div class="member-title">Oyuncular</div>
+                            <ul class="member-list">
+                                ${oyuncuListesiHTML}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = htmlContent;
         }
 
         function setupBracket() {
@@ -343,15 +467,13 @@
         function toggleTheme() {
             document.body.classList.toggle('dark-theme');
             const btnLabel = document.getElementById('theme-icon');
-            btnLabel.innerText = document.body.classList.contains('dark-theme') ? '☀️ Lumos (Aydınlık Mod)' : '✨ Nox (Karanlık Mod)';
+            btnLabel.innerText = document.body.classList.contains('dark-theme') ? '☀️ Lumos' : '✨ Nox';
         }
 
-        // Başlat
         startMainCountdown();
         startNextMatchWidget();
         setupBracket();
+        setupTeams(); // Takımları yükle
     </script>
 </body>
-
 </html>
-
