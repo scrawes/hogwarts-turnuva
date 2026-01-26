@@ -34,13 +34,22 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 80px;
             background-color: var(--navbar-bg); border-bottom: 2px solid var(--text-gold);
             display: flex; justify-content: space-between; align-items: center;
-            /* DÜZELTME: box-sizing eklendi ve padding arttırıldı */
-            padding: 0 60px; 
+            /* GÜNCELLEME: Padding 60px'den 40px'e çekildi (20px dışa taşındı) */
+            padding: 0 40px; 
             box-sizing: border-box; 
             z-index: 1000; box-shadow: var(--glow);
         }
         .nav-left { display: flex; align-items: center; gap: 15px; }
-        .site-logo { height: 50px; border-radius: 50%; border: 2px solid var(--text-gold); }
+        
+        /* LOGO AYARI: Boyut sınırlaması eklendi */
+        .site-logo { 
+            height: 50px; 
+            width: auto; /* Orantıyı koru */
+            border-radius: 50%; 
+            border: 2px solid var(--text-gold); 
+            object-fit: cover; /* Resmi yuvarlağa sığdır */
+        }
+        
         .site-name { font-size: 1.5rem; color: var(--text-gold); margin: 0; }
         
         /* Legacy Butonu */
@@ -49,7 +58,7 @@
             border-radius: 20px; text-decoration: none; font-family: sans-serif; 
             font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
             transition: transform 0.2s; border: 1px solid #4752c4;
-            margin-right: 20px; /* Ekstra güvenlik payı */
+            /* Sağ taraftaki boşluk korundu */
         }
         .discord-btn:hover { transform: scale(1.05); background-color: #4752c4; }
 
@@ -134,7 +143,7 @@
 
     <nav class="navbar">
         <div class="nav-left">
-            <img src="https://www.logodesign.org/wp-content/uploads/2021/12/Hogwarts-Logo.jpg">
+            <img id="site-logo-img" class="site-logo" src="">
             <h1 class="site-name" id="nav-site-name">Hogwarts Ligi</h1>
         </div>
         
@@ -217,6 +226,9 @@
         */
         const AYARLAR = {
             siteAdi: "HOGWARTS 1. LİG",
+            // SİTE LOGOSU BURADAN DEĞİŞİR:
+            siteLogosu: "https://www.logodesign.org/wp-content/uploads/2021/12/Hogwarts-Logo.jpg", // Örnek olarak GitHub raw linki konuldu. Kendi linkini buraya yapıştır.
+            
             duyuruBaslik: "TURNUVA BAŞLIYOR!",
             duyuruMetni: "Dostluk maçları 8 takım ile oynanacak, daha sonrasında Hogwarts 1. Lig için süreç devam edecek.",
             hedefTarih: "Oct 31, 2026 19:00:00", 
@@ -272,6 +284,9 @@
         */
         function render() {
             document.getElementById('nav-site-name').innerText = AYARLAR.siteAdi;
+            // LOGO BAĞLANTISI: Ayarlardan gelen linki img etiketine basıyoruz.
+            document.getElementById('site-logo-img').src = AYARLAR.siteLogosu;
+
             document.getElementById('page-title').innerText = AYARLAR.duyuruBaslik;
             document.getElementById('anno-text').innerText = AYARLAR.duyuruMetni;
             
