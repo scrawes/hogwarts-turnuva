@@ -3,136 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hogwarts Turnuva & Lig Paneli</title>
+    <title>Hogwarts Turnuva Paneli</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* --- AYARLAR VE RENKLER --- */
         :root {
             --bg-color: #121212;
-            --bg-pattern: url('https://www.transparenttextures.com/patterns/dark-matter.png');
             --text-main: #e0e0e0;
             --text-gold: #ffc107; 
             --card-bg: #1e1e24;
             --navbar-bg: #15151a; 
             --border-color: #333;
-            --accent-red: #a00;
-            --glow: 0 0 10px rgba(255, 193, 7, 0.1);
-            --line-color: #555;
-        }
-
-        body.light-theme {
-            --bg-color: #f4f1ea;
-            --bg-pattern: url('https://www.transparenttextures.com/patterns/aged-paper.png');
-            --text-main: #2c1810;
-            --text-gold: #8a0303; 
-            --card-bg: #fff;
-            --navbar-bg: #e8e5de;
-            --border-color: #d3a625;
-            --accent-red: #d3a625;
-            --glow: 0 5px 15px rgba(0,0,0,0.1);
-            --line-color: #b89f7a;
+            --glow: 0 0 12px rgba(255, 193, 7, 0.1);
         }
 
         body {
             font-family: 'Crimson Text', serif;
             background-color: var(--bg-color);
-            background-image: var(--bg-pattern);
+            background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
             color: var(--text-main);
-            margin: 0; 
-            padding: 20px;
-            padding-top: 100px; 
-            transition: all 0.4s ease;
+            margin: 0; padding: 20px; padding-top: 100px;
         }
 
         h1, h2, h3, .brand-font { font-family: 'Cinzel Decorative', cursive; }
         .container { max-width: 1400px; margin: 0 auto; }
 
-        /* --- NAVBAR --- */
+        /* NAVBAR */
         .navbar {
             position: fixed; top: 0; left: 0; width: 100%; height: 80px;
             background-color: var(--navbar-bg); border-bottom: 2px solid var(--text-gold);
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 30px; box-sizing: border-box; z-index: 1000;
-            box-shadow: var(--glow); transition: background-color 0.4s ease;
+            /* DÜZELTME: box-sizing eklendi ve padding arttırıldı */
+            padding: 0 60px; 
+            box-sizing: border-box; 
+            z-index: 1000; box-shadow: var(--glow);
         }
-
         .nav-left { display: flex; align-items: center; gap: 15px; }
-        .site-logo { height: 50px; width: auto; border-radius: 50%; border: 2px solid var(--text-gold); }
-        .site-name { font-family: 'Cinzel Decorative', cursive; font-size: 1.5rem; color: var(--text-gold); margin: 0; }
-        .nav-right { display: flex; gap: 10px; align-items: center; }
-
-        .theme-btn, .discord-btn {
-            padding: 8px 16px; border-radius: 20px; cursor: pointer;
-            font-family: 'Cinzel Decorative'; box-shadow: var(--glow);
-            transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-            font-size: 0.9rem; border: none;
-        }
-        .theme-btn { background: var(--card-bg); border: 1px solid var(--text-gold); color: var(--text-gold); }
-        .theme-btn:hover { background: var(--text-gold); color: var(--bg-color); }
-        .discord-btn { background-color: #5865F2; color: #fff; border: 1px solid #5865F2; }
-
-        /* --- BAŞLIK VE WIDGETLAR --- */
-        .header-box { text-align: center; padding: 40px; margin-bottom: 40px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--glow); }
-        .main-title { font-size: 2.5rem; color: var(--text-gold); margin-bottom: 15px; border-bottom: 1px solid var(--line-color); display: inline-block; padding-bottom: 10px; }
-        .announcement-text { font-size: 1.2rem; font-style: italic; opacity: 0.9; margin-bottom: 20px; }
-        .countdown { font-size: 2rem; font-weight: bold; font-family: 'Cinzel Decorative'; letter-spacing: 2px; opacity: 0.7; }
+        .site-logo { height: 50px; border-radius: 50%; border: 2px solid var(--text-gold); }
+        .site-name { font-size: 1.5rem; color: var(--text-gold); margin: 0; }
         
-        .widget-row { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 50px; }
-        .widget-card { flex: 1; background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); text-align: center; box-shadow: var(--glow); min-width: 300px; }
-        .w-title { font-size: 0.9rem; letter-spacing: 3px; color: var(--text-gold); opacity: 0.7; margin-bottom: 15px; text-transform: uppercase; }
-        .w-big-text { font-size: 1.8rem; font-weight: bold; margin-bottom: 5px; }
-        .w-sub { font-size: 1.2rem; color: var(--text-gold); font-family: 'Cinzel Decorative'; }
+        /* Legacy Butonu */
+        .discord-btn { 
+            background-color: #5865F2; color: #fff; padding: 10px 25px; 
+            border-radius: 20px; text-decoration: none; font-family: sans-serif; 
+            font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
+            transition: transform 0.2s; border: 1px solid #4752c4;
+            margin-right: 20px; /* Ekstra güvenlik payı */
+        }
+        .discord-btn:hover { transform: scale(1.05); background-color: #4752c4; }
 
-        /* --- TURNUVA TABLOSU --- */
-        .bracket-section { padding: 40px 0; overflow-x: auto; text-align: center; }
-        .bracket-container { display: flex; justify-content: center; align-items: center; gap: 60px; min-width: 900px; margin: 0 auto; }
-        .column { display: flex; flex-direction: column; justify-content: space-around; width: 240px; position: relative; }
-        .col-qf { height: 600px; } .col-sf { height: 450px; } .col-fi { height: 200px; }
-        .match-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; box-shadow: var(--glow); position: relative; transition: transform 0.3s; margin-bottom: 10px; }
+        /* HEADER & WIDGETLAR */
+        .header-box { 
+            text-align: center; padding: 30px; margin-bottom: 30px; 
+            background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--glow); 
+        }
+        .main-title { font-size: 2.2rem; color: var(--text-gold); border-bottom: 1px solid var(--text-gold); display: inline-block; margin-bottom: 15px; }
+        .countdown { font-size: 2rem; font-weight: bold; letter-spacing: 2px; font-family: 'Cinzel Decorative'; margin-top: 10px; }
+
+        .widget-row { display: flex; gap: 20px; margin-bottom: 50px; flex-wrap: wrap; }
+        .widget-card { 
+            flex: 1; background: var(--card-bg); padding: 20px; border-radius: 12px; 
+            border: 1px solid var(--border-color); text-align: center; min-width: 300px; box-shadow: var(--glow);
+        }
+        .w-title { color: var(--text-gold); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.8; }
+        .w-big { font-size: 1.4rem; font-weight: bold; margin-bottom: 5px; }
+
+        /* TURNUVA AĞACI */
+        .bracket-wrapper {
+            display: flex; justify-content: center; align-items: center; gap: 40px; 
+            padding: 40px 0; overflow-x: auto; min-width: 1000px;
+        }
+        .column { display: flex; flex-direction: column; width: 300px; position: relative; }
+        
+        .stage-title {
+            text-align: center; color: var(--text-gold); margin-bottom: 20px; 
+            font-family: 'Cinzel Decorative'; font-size: 1.2rem; border: 1px solid var(--border-color); 
+            padding: 5px; border-radius: 5px; background: rgba(0,0,0,0.3);
+        }
+
+        .col-qf { height: 600px; display: flex; flex-direction: column; justify-content: space-between; } 
+        .col-sf { height: 600px; display: flex; flex-direction: column; justify-content: space-around; } 
+        .col-fi { height: 600px; display: flex; flex-direction: column; justify-content: center; }       
+
+        .match-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 12px; border-radius: 8px; position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
         .match-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--text-gold); border-radius: 4px 0 0 4px; }
-        .m-team { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
-        .m-logo { width: 25px; height: 25px; border-radius: 50%; margin-right: 10px; background: #555; }
-        .m-name { font-size: 0.9rem; font-weight: 600; flex-grow: 1; text-align: left; }
-        .m-score { color: var(--text-gold); font-weight: bold; font-family: 'Cinzel Decorative'; }
+        
+        .m-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .m-row:last-child { border: none; }
+        .m-score { color: var(--text-gold); font-weight: bold; font-family: 'Cinzel Decorative'; font-size: 1.1rem; }
+        
+        .m-info { display: flex; align-items: center; gap: 10px; }
+        .m-logo-mini { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid var(--text-gold); }
 
-        /* --- TAKIM KARTLARI --- */
-        .section-header { text-align: center; margin: 60px 0 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
-        .section-header h2 { font-size: 2.5rem; color: var(--text-gold); margin: 0; }
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 80px; }
+        /* TAKIM KARTLARI */
+        .section-header { text-align: center; margin: 80px 0 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .section-header h2 { font-size: 2rem; color: var(--text-gold); margin: 0; }
+        
+        .team-grid { 
+            display: grid; grid-template-columns: repeat(4, 1fr); 
+            gap: 25px; margin-bottom: 60px; 
+        }
+        @media (max-width: 1100px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+
         .t-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; transition: transform 0.3s; box-shadow: var(--glow); }
-        .t-card:hover { transform: translateY(-5px); }
+        .t-card:hover { transform: translateY(-5px); border-color: var(--text-gold); }
         .t-head { padding: 15px; text-align: center; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border-color); }
-        .t-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-gold); padding: 3px; }
-        .t-name { margin: 10px 0 0; font-size: 1.2rem; color: var(--text-gold); }
-        .t-players { padding: 15px; }
+        .t-logo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--text-gold); padding: 2px; }
+        .t-name { margin-top: 10px; font-size: 1.1rem; color: var(--text-gold); font-weight: bold; }
+        .t-players { padding: 15px 20px; }
         .t-players ul { list-style: none; padding: 0; margin: 0; }
-        .t-players li { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; opacity: 0.8; }
-        .t-players li::before { content: '✦'; color: var(--text-gold); margin-right: 10px; }
+        .t-players li { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
+        .t-players li::before { content: '⚡'; color: var(--text-gold); margin-right: 8px; }
 
-        /* --- LİG TABLOSU --- */
-        .league-container { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--glow); margin-bottom: 50px; }
-        .league-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .league-table th { background: rgba(0,0,0,0.3); color: var(--text-gold); padding: 15px; font-family: 'Cinzel Decorative'; font-size: 0.85rem; border-bottom: 2px solid var(--text-gold); }
+        /* LİG TABLOSU */
+        .league-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; }
+        .league-table th { background: rgba(0,0,0,0.5); color: var(--text-gold); padding: 15px; text-align: left; font-family: 'Cinzel Decorative'; border-bottom: 2px solid var(--text-gold); }
         .league-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .league-table tr:hover { background: rgba(255,193,7,0.02); }
-        .stat-col { text-align: center; width: 60px; }
-        .puan-col { text-align: center; width: 60px; font-weight: bold; color: var(--text-gold); }
-        .rank-col { width: 40px; color: var(--text-gold); font-weight: bold; }
-
-        .footer { text-align: center; opacity: 0.5; font-size: 0.8rem; margin: 50px 0; font-style: italic; }
+        .stat-col { text-align: center; width: 50px; }
+        .puan-col { text-align: center; width: 60px; color: var(--text-gold); font-weight: bold; }
+        
+        .footer { text-align: center; opacity: 0.5; font-size: 0.8rem; margin: 60px 0; font-style: italic; }
     </style>
 </head>
-<body class="dark-theme"> 
+<body>
 
     <nav class="navbar">
         <div class="nav-left">
-            <img src="https://static.vecteezy.com/system/resources/thumbnails/018/966/310/small_2x/luxury-letter-h-logo-template-in-gold-color-modern-trendy-initial-luxury-h-letter-logo-design-royal-premium-letter-h-logo-design-template-vector.jpg" alt="Logo" class="site-logo">
-            <h1 class="site-name">Hogwarts Ligi</h1>
+            <img src="https://www.logodesign.org/wp-content/uploads/2021/12/Hogwarts-Logo.jpg">
+            <h1 class="site-name" id="nav-site-name">Hogwarts Ligi</h1>
         </div>
+        
         <div class="nav-right">
-            <button class="theme-btn" onclick="toggleTheme()">☀️ Lumos / ✨ Nox</button>
             <a href="https://discord.gg/legacymod" target="_blank" class="discord-btn">
                 <i class="fab fa-discord"></i> Legacy
             </a>
@@ -142,45 +148,52 @@
     <div class="container">
         
         <div class="header-box">
-            <h1 class="main-title" id="main-title">YÜKLENİYOR...</h1>
-            <div class="announcement-text" id="announcement-text">Veriler büyüleniyor...</div>
+            <h1 class="main-title" id="page-title">DUYURU BAŞLIĞI</h1>
+            <div style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 15px;" id="anno-text">Duyuru metni buraya gelecek...</div>
             <div class="countdown" id="main-timer">00:00:00</div>
         </div>
 
         <div class="widget-row">
             <div class="widget-card">
-                <div class="w-title">SIRADAKİ MÜCADELE</div>
-                <div class="w-big-text" id="nm-teams">...</div>
-                <div class="w-sub" id="nm-timer">--:--</div>
-                <div style="margin-top:10px; opacity:0.7;" id="nm-loc">...</div>
+                <div class="w-title">SIRADAKİ MAÇ</div>
+                <div class="w-big" id="nm-teams">Belirlenecek vs Belirlenecek</div>
+                <div id="nm-date" style="color:var(--text-gold); margin-bottom:5px;">--/--/---- --:--</div>
+                <div id="nm-loc" style="opacity:0.7; font-size:0.9rem;">Lokasyon</div>
             </div>
             <div class="widget-card">
-                <div class="w-title">SAHA DURUMU</div>
-                <div style="font-size: 2.5rem;" id="w-icon">☁️</div>
-                <div class="w-big-text" id="w-temp">--°C</div>
-                <div style="opacity:0.8;" id="w-desc">--</div>
+                <div class="w-title">HAVA DURUMU</div>
+                <div id="w-icon" style="font-size: 2.5rem;">☁️</div>
+                <div class="w-big" id="w-temp">--°C</div>
+                <div id="w-desc" style="opacity:0.7; text-transform: uppercase;">--</div>
             </div>
         </div>
 
         <div class="section-header"><h2>Turnuva Tablosu</h2></div>
-        <div class="bracket-section">
-            <div class="bracket-container">
-                <div class="column col-qf" id="qf-col"></div>
-                <div class="column col-sf" id="sf-col"></div>
-                <div class="column col-fi" id="fi-col"></div>
+        <div class="bracket-wrapper">
+            <div class="column">
+                <div class="stage-title">ÇEYREK FİNAL</div>
+                <div class="col-qf" id="qf-area"></div>
+            </div>
+            <div class="column">
+                <div class="stage-title">YARI FİNAL</div>
+                <div class="col-sf" id="sf-area"></div>
+            </div>
+            <div class="column">
+                <div class="stage-title">BÜYÜK FİNAL</div>
+                <div class="col-fi" id="fi-area"></div>
             </div>
         </div>
 
         <div class="section-header"><h2>Turnuva Takımları</h2></div>
-        <div class="team-grid" id="teams-container"></div>
+        <div class="team-grid" id="teams-area"></div>
 
-        <div class="section-header"><h2>Hogwarts 1. Lig Puan Durumu</h2></div>
-        <div class="league-container">
+        <div class="section-header"><h2>Lig Puan Durumu</h2></div>
+        <div style="overflow-x:auto; margin-bottom: 50px;">
             <table class="league-table">
                 <thead>
                     <tr>
-                        <th class="rank-col">#</th>
-                        <th>TAKIM ADI</th>
+                        <th style="width:50px;">#</th>
+                        <th>TAKIM</th>
                         <th class="stat-col">O</th>
                         <th class="stat-col">G</th>
                         <th class="stat-col">B</th>
@@ -190,64 +203,84 @@
                         <th class="puan-col">P</th>
                     </tr>
                 </thead>
-                <tbody id="league-body">
-                    </tbody>
+                <tbody id="league-area"></tbody>
             </table>
         </div>
 
-        <div class="footer">
-            Sihir Bakanlığı Onaylıdır. © 2026 Hogwarts Spor Dairesi.
-        </div>
+        <div class="footer">Sihir Bakanlığı Onaylıdır. © 2026 Hogwarts Spor Dairesi.</div>
     </div>
 
     <script>
-        /* ================= SİTE AYARLARI ================= */
+        /* ==================================================================
+           🧙‍♂️ YÖNETİCİ KONTROL PANELİ (AYARLAR)
+           ==================================================================
+        */
         const AYARLAR = {
-            baslik: "HOGWARTS TURNUVA PANELİ",
-            duyuruMetni: "Yeni sezon hazırlıkları tamamlandı. Takımlar belirleniyor!",
-            hedefTarih: "Oct 31, 2026 19:00:00",
-            sonrakiMac: { takimlar: "Belirlenecek vs Belirlenecek", tarih: "Jan 29, 2026 20:00:00", yer: "Büyük Saha", hava: "gunesli", derece: "12 °C" },
-            
-            // 8 Takım - 4'er Oyuncu
-            takimlar: Array(8).fill(null).map((_, i) => ({
-                ad: "Belirlenecek",
-                logo: "https://via.placeholder.com/60/333/gold?text=?",
-                kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"]
-            })),
+            siteAdi: "HOGWARTS 1. LİG",
+            duyuruBaslik: "TURNUVA BAŞLIYOR!",
+            duyuruMetni: "Dostluk maçları 8 takım ile oynanacak, daha sonrasında Hogwarts 1. Lig için süreç devam edecek.",
+            hedefTarih: "Oct 31, 2026 19:00:00", 
 
-            // 20 Lig Takımı - Puan Tablosu Verileri
-            lig: Array(20).fill(null).map((_, i) => ({
-                ad: "Belirlenecek",
-                o: 0,  // Oynanan
-                g: 0,  // Galibiyet
-                b: 0,  // Beraberlik
-                m: 0,  // Mağlubiyet
-                ag: 0, // Atılan Gol
-                yg: 0, // Yenen Gol
-                p: 0   // Puan
-            })),
+            siradakiMac: {
+                takimlar: "Belirlenecek vs Belirlenecek",
+                tarih: "15 Ocak 2026 20:00",
+                yer: "Quidditch Stadyumu",
+                hava: "karli", 
+                derece: "-2 °C"
+            },
 
+            // 8 Takım (Kartlar)
+            // Ağaçtaki logolar buradaki "logo" alanından otomatik çekilir.
+            takimlar: [
+                { id:1, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
+                { id:2, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
+                { id:3, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
+                { id:4, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
+                { id:5, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
+                { id:6, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
+                { id:7, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
+                { id:8, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] }
+            ],
+
+            // Turnuva Ağacı Skorları
             maclar: {
-                qf: Array(4).fill({ t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" }),
-                sf: Array(2).fill({ t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" }),
-                fi: [{ t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" }]
-            }
+                qf: [
+                    { t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" },
+                    { t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" },
+                    { t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" },
+                    { t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" }
+                ],
+                sf: [
+                    { t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" },
+                    { t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" }
+                ],
+                fi: [
+                    { t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" }
+                ]
+            },
+
+            // Lig Puan Tablosu
+            lig: Array(20).fill(null).map((_, i) => ({
+                ad: "Belirlenecek", 
+                o: 0, g: 0, b: 0, m: 0, ag: 0, yg: 0, p: 0
+            }))
         };
 
-        /* ================= FONKSİYONLAR ================= */
-        function toggleTheme() {
-            document.body.classList.toggle('dark-theme');
-            document.body.classList.toggle('light-theme');
-        }
-
-        function startTimer(target, elemId, endMsg) {
-            const countDate = new Date(target).getTime();
+        /* ==================================================================
+           ⚙️ SİSTEM FONKSİYONLARI
+           ==================================================================
+        */
+        function render() {
+            document.getElementById('nav-site-name').innerText = AYARLAR.siteAdi;
+            document.getElementById('page-title').innerText = AYARLAR.duyuruBaslik;
+            document.getElementById('anno-text').innerText = AYARLAR.duyuruMetni;
+            
+            const countDate = new Date(AYARLAR.hedefTarih).getTime();
             setInterval(() => {
                 const now = new Date().getTime();
                 const gap = countDate - now;
-                const el = document.getElementById(elemId);
-                if(!el) return;
-                if(gap < 0) { el.innerText = endMsg; } 
+                const el = document.getElementById('main-timer');
+                if(gap < 0) el.innerText = "SÜRE DOLDU";
                 else {
                     const d = Math.floor(gap / (1000*60*60*24));
                     const h = Math.floor((gap % (1000*60*60*24)) / (1000*60*60));
@@ -255,47 +288,60 @@
                     el.innerText = `${d}G ${h}S ${m}D`;
                 }
             }, 1000);
-        }
 
-        function render() {
-            document.getElementById('main-title').innerText = AYARLAR.baslik;
-            document.getElementById('announcement-text').innerText = AYARLAR.duyuruMetni;
-            startTimer(AYARLAR.hedefTarih, 'main-timer', "BAŞLADI!");
-            
-            // Hava Durumu
-            const sm = AYARLAR.sonrakiMac;
+            const sm = AYARLAR.siradakiMac;
             document.getElementById('nm-teams').innerText = sm.takimlar;
+            document.getElementById('nm-date').innerText = sm.tarih;
             document.getElementById('nm-loc').innerText = sm.yer;
-            startTimer(sm.tarih, 'nm-timer', "OYNANIYOR");
-            
-            let icon = "☁️";
-            if(sm.hava === "gunesli") icon = "☀️";
-            if(sm.hava === "karli") icon = "❄️";
-            document.getElementById('w-icon').innerText = icon;
             document.getElementById('w-temp').innerText = sm.derece;
             document.getElementById('w-desc').innerText = sm.hava.toUpperCase();
+            
+            const icons = { gunesli:"☀️", karli:"❄️", yagmurlu:"🌧️", bulutlu:"☁️" };
+            document.getElementById('w-icon').innerText = icons[sm.hava] || "☁️";
 
-            // Braket Render
-            const createMatchHTML = (m) => `
+            // Logo bulucu fonksiyon
+            const getLogo = (name) => {
+                const team = AYARLAR.takimlar.find(t => t.ad === name);
+                // Eğer takım listede yoksa veya ismi 'Belirlenecek' ise placeholder döndür
+                return team ? team.logo : "https://via.placeholder.com/24/333/gold?text=?";
+            };
+
+            const drawMatch = (m) => `
                 <div class="match-card">
-                    <div class="m-team"><div><img src="https://via.placeholder.com/25" class="m-logo"> <span class="m-name">${m.t1}</span></div><span class="m-score">${m.s1}</span></div>
-                    <div class="m-team"><div><img src="https://via.placeholder.com/25" class="m-logo"> <span class="m-name">${m.t2}</span></div><span class="m-score">${m.s2}</span></div>
+                    <div class="m-row">
+                        <div class="m-info">
+                            <img src="${getLogo(m.t1)}" class="m-logo-mini">
+                            <span>${m.t1}</span>
+                        </div>
+                        <span class="m-score">${m.s1}</span>
+                    </div>
+                    <div class="m-row">
+                        <div class="m-info">
+                            <img src="${getLogo(m.t2)}" class="m-logo-mini">
+                            <span>${m.t2}</span>
+                        </div>
+                        <span class="m-score">${m.s2}</span>
+                    </div>
                 </div>`;
-            document.getElementById('qf-col').innerHTML = AYARLAR.maclar.qf.map(createMatchHTML).join('');
-            document.getElementById('sf-col').innerHTML = AYARLAR.maclar.sf.map(createMatchHTML).join('');
-            document.getElementById('fi-col').innerHTML = AYARLAR.maclar.fi.map(createMatchHTML).join('');
+            
+            document.getElementById('qf-area').innerHTML = AYARLAR.maclar.qf.map(drawMatch).join('');
+            document.getElementById('sf-area').innerHTML = AYARLAR.maclar.sf.map(drawMatch).join('');
+            document.getElementById('fi-area').innerHTML = AYARLAR.maclar.fi.map(drawMatch).join('');
 
-            // Takım Kartları Render
-            document.getElementById('teams-container').innerHTML = AYARLAR.takimlar.map(t => `
+            document.getElementById('teams-area').innerHTML = AYARLAR.takimlar.map(t => `
                 <div class="t-card">
-                    <div class="t-head"><img src="${t.logo}" class="t-logo"><h3 class="t-name brand-font">${t.ad}</h3></div>
-                    <div class="t-players"><ul>${t.kadro.map(p => `<li>${p}</li>`).join('')}</ul></div>
+                    <div class="t-head">
+                        <img src="${t.logo}" class="t-logo">
+                        <div class="t-name">${t.ad}</div>
+                    </div>
+                    <div class="t-players">
+                        <ul>${t.kadro.map(p => `<li>${p}</li>`).join('')}</ul>
+                    </div>
                 </div>`).join('');
 
-            // Lig Tablosu Render
-            document.getElementById('league-body').innerHTML = AYARLAR.lig.map((t, i) => `
+            document.getElementById('league-area').innerHTML = AYARLAR.lig.map((t, i) => `
                 <tr>
-                    <td class="rank-col">${i+1}</td>
+                    <td style="opacity:0.6; text-align:center;">${i+1}</td>
                     <td style="font-weight:600;">${t.ad}</td>
                     <td class="stat-col">${t.o}</td>
                     <td class="stat-col">${t.g}</td>
@@ -306,9 +352,7 @@
                     <td class="puan-col">${t.p}</td>
                 </tr>`).join('');
         }
-
-        render();
+        window.onload = render;
     </script>
 </body>
 </html>
-
