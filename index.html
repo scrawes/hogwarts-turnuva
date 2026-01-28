@@ -126,11 +126,6 @@
         
         .footer { text-align: center; opacity: 0.5; font-size: 0.8rem; margin: 60px 0; font-style: italic; }
 
-        /* ============================
-           POPUP REKLAM STİLLERİ
-           ============================ */
-    
-
     </style>
 </head>
 <body>
@@ -207,16 +202,6 @@
         <div class="footer">Sihir Bakanlığı Onaylıdır. © 2026 Sihirli Oyunlar ve Sporlar Dairesi.</div>
     </div>
 
-    <div id="reklam-alani" class="popup-container">
-        <div class="popup-close-btn" onclick="kapatReklam()">✕</div>
-        <div class="popup-content">
-            <a id="reklam-link" href="#" target="_blank">
-                <img id="reklam-gorsel" class="popup-img" src="" alt="Reklam">
-                <div id="reklam-metin" class="popup-text-area"></div>
-            </a>
-        </div>
-    </div>
-
     <script>
         /* ==================================================================
            🧙‍♂️ YÖNETİCİ KONTROL PANELİ (AYARLAR)
@@ -229,8 +214,6 @@
             duyuruBaslik: "BAŞVURULAR AÇILDI!",
             duyuruMetni: "Başvurular, 28.01.1945 tarihinde 22.00'da başlayacaktır. Katılacak takımlar Sihirli Oyunlar ve Sporlar Dairesine başvuru yapmalıdır. Her haneden 1 takım toplam 4, Sivillerden de 4 takım, toplam 8 takım kurulacak. Sivil takımlar fazlalık durumunda kura üzerine ayrıştırılacaktır. Katılım ücreti takım başına 2000 Galleondur.",
             hedefTarih: "Feb 3, 1945 19:00:00", 
-
-       
 
             siradakiMac: {
                 takimlar: "Belirlenecek vs Belirlenecek",
@@ -284,19 +267,6 @@
             document.getElementById('page-title').innerText = AYARLAR.duyuruBaslik;
             document.getElementById('anno-text').innerText = AYARLAR.duyuruMetni;
             
-            // REKLAM YÖNETİMİ
-            if(AYARLAR.reklam.aktif) {
-                const reklamEl = document.getElementById('reklam-alani');
-                document.getElementById('reklam-gorsel').src = AYARLAR.reklam.gorsel;
-                document.getElementById('reklam-metin').innerHTML = AYARLAR.reklam.metin;
-                document.getElementById('reklam-link').href = AYARLAR.reklam.link;
-                
-                // Sayfa yüklendikten 1.5 saniye sonra çıksın
-                setTimeout(() => {
-                    reklamEl.style.display = 'block';
-                }, 1500);
-            }
-
             const countDate = new Date(AYARLAR.hedefTarih).getTime();
             setInterval(() => {
                 const now = new Date().getTime();
@@ -373,18 +343,7 @@
                 </tr>`).join('');
         }
         
-        // Reklamı kapatma fonksiyonu
-        function kapatReklam() {
-            document.getElementById('reklam-alani').style.display = 'none';
-        }
-
         window.onload = render;
     </script>
 </body>
 </html>
-
-
-
-
-
-
