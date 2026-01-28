@@ -34,20 +34,18 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 80px;
             background-color: var(--navbar-bg); border-bottom: 2px solid var(--text-gold);
             display: flex; justify-content: space-between; align-items: center;
-            /* GÜNCELLEME: Padding 60px'den 40px'e çekildi (20px dışa taşındı) */
             padding: 0 40px; 
             box-sizing: border-box; 
             z-index: 1000; box-shadow: var(--glow);
         }
         .nav-left { display: flex; align-items: center; gap: 15px; }
         
-        /* LOGO AYARI: Boyut sınırlaması eklendi */
         .site-logo { 
             height: 50px; 
-            width: auto; /* Orantıyı koru */
+            width: auto; 
             border-radius: 50%; 
             border: 2px solid var(--text-gold); 
-            object-fit: cover; /* Resmi yuvarlağa sığdır */
+            object-fit: cover; 
         }
         
         .site-name { font-size: 1.5rem; color: var(--text-gold); margin: 0; }
@@ -127,6 +125,78 @@
         .puan-col { text-align: center; width: 60px; color: var(--text-gold); font-weight: bold; }
         
         .footer { text-align: center; opacity: 0.5; font-size: 0.8rem; margin: 60px 0; font-style: italic; }
+
+        /* ============================
+           POPUP REKLAM STİLLERİ
+           ============================ */
+        .popup-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px; /* Standart genişlik */
+            max-width: 90%;
+            background: var(--card-bg);
+            border: 2px solid var(--text-gold);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            z-index: 2000; /* Navbardan üstte */
+            display: none; /* JS ile açılacak */
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .popup-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            background: rgba(0,0,0,0.8);
+            color: var(--text-gold);
+            border: 1px solid var(--text-gold);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        .popup-close-btn:hover {
+            background: var(--text-gold);
+            color: #000;
+        }
+
+        .popup-content a {
+            display: block;
+            text-decoration: none;
+        }
+
+        .popup-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            /* Maksimum yükseklik sınırı koymak istersen burayı aç: max-height: 300px; object-fit: cover; */
+        }
+
+        .popup-text-area {
+            padding: 12px;
+            text-align: center;
+            color: var(--text-main);
+            background: rgba(0,0,0,0.3);
+            font-size: 0.95rem;
+            border-top: 1px solid #333;
+        }
+        .popup-text-area strong {
+            color: var(--text-gold);
+        }
+
     </style>
 </head>
 <body>
@@ -136,7 +206,6 @@
             <img id="site-logo-img" class="site-logo" src="">
             <h1 class="site-name" id="nav-site-name">Hogwarts Ligi</h1>
         </div>
-        
     </nav>
 
     <div class="container">
@@ -201,7 +270,17 @@
             </table>
         </div>
 
-        <div class="footer">Sihir Bakanlığı Onaylıdır. © 2026 Hogwarts Spor Dairesi.</div>
+        <div class="footer">Sihir Bakanlığı Onaylıdır. © 2026 Sihirli Oyunlar ve Sporlar Dairesi.</div>
+    </div>
+
+    <div id="reklam-alani" class="popup-container">
+        <div class="popup-close-btn" onclick="kapatReklam()">✕</div>
+        <div class="popup-content">
+            <a id="reklam-link" href="#" target="_blank">
+                <img id="reklam-gorsel" class="popup-img" src="" alt="Reklam">
+                <div id="reklam-metin" class="popup-text-area"></div>
+            </a>
+        </div>
     </div>
 
     <script>
@@ -211,23 +290,28 @@
         */
         const AYARLAR = {
             siteAdi: "HOGWARTS 1. LİG",
-            // SİTE LOGOSU BURADAN DEĞİŞİR:
-            siteLogosu: "https://www.logodesign.org/wp-content/uploads/2021/12/Hogwarts-Logo.jpg", // Örnek olarak GitHub raw linki konuldu. Kendi linkini buraya yapıştır.
+            siteLogosu: "https://www.logodesign.org/wp-content/uploads/2021/12/Hogwarts-Logo.jpg",
             
-            duyuruBaslik: "TURNUVA BAŞLIYOR!",
-            duyuruMetni: "Dostluk maçları 8 takım ile oynanacak, daha sonrasında Hogwarts 1. Lig için süreç devam edecek.",
-            hedefTarih: "Oct 31, 2026 19:00:00", 
+            duyuruBaslik: "BAŞVURULAR AÇILDI!",
+            duyuruMetni: "Başvurular, 28.01.2026 tarihinde 22.00'da başlayacaktır. Katılacak takımlar Sihirli Oyunlar ve Sporlar Dairesine başvuru yapmalıdır.<br><strong>Her haneden 1 takım toplam 4, Sivillerden de 4 toplam 8 takım kurulacak. Sivil takımlar fazlalık durumunda kura üzerine ayrıştırılacaktır.",
+            hedefTarih: "Feb 3, 2026 19:00:00", 
+
+            // YENİ EKLENEN REKLAM AYARLARI
+            reklam: {
+                aktif: true, // true: göster, false: gizle
+                gorsel: "https://media.discordapp.net/attachments/1046085246535356496/1463620817425268909/ChatGPT_Image_21_Oca_2026_21_30_39.png?ex=6979bedb&is=69786d5b&hm=a039faa1fde3ec534e76b20d6fe080e27e6d7e5c5a45e9886debcca693997e7c&=&format=webp&quality=lossless&width=233&height=350", // Reklam resmi linki
+                metin: "<strong>Tiyatro Kulübü Kayıtları Açıldı</strong><br>Kayıt olmak için tıkla!", // Alt yazı
+                link: "link" // Tıklayınca gideceği site
+            },
 
             siradakiMac: {
                 takimlar: "Belirlenecek vs Belirlenecek",
-                tarih: "15 Ocak 2026 20:00",
+                tarih: "tarih belirlenecek",
                 yer: "Quidditch Stadyumu",
                 hava: "karli", 
                 derece: "-2 °C"
             },
 
-            // 8 Takım (Kartlar)
-            // Ağaçtaki logolar buradaki "logo" alanından otomatik çekilir.
             takimlar: [
                 { id:1, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
                 { id:2, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] },
@@ -239,7 +323,6 @@
                 { id:8, ad: "Belirlenecek", logo: "https://via.placeholder.com/60/333/gold?text=?", kadro: ["Oyuncu 1", "Oyuncu 2", "Oyuncu 3", "Oyuncu 4"] }
             ],
 
-            // Turnuva Ağacı Skorları
             maclar: {
                 qf: [
                     { t1: "Belirlenecek", s1: "0", t2: "Belirlenecek", s2: "0" },
@@ -256,7 +339,6 @@
                 ]
             },
 
-            // Lig Puan Tablosu
             lig: Array(20).fill(null).map((_, i) => ({
                 ad: "Belirlenecek", 
                 o: 0, g: 0, b: 0, m: 0, ag: 0, yg: 0, p: 0
@@ -269,12 +351,24 @@
         */
         function render() {
             document.getElementById('nav-site-name').innerText = AYARLAR.siteAdi;
-            // LOGO BAĞLANTISI: Ayarlardan gelen linki img etiketine basıyoruz.
             document.getElementById('site-logo-img').src = AYARLAR.siteLogosu;
 
             document.getElementById('page-title').innerText = AYARLAR.duyuruBaslik;
             document.getElementById('anno-text').innerText = AYARLAR.duyuruMetni;
             
+            // REKLAM YÖNETİMİ
+            if(AYARLAR.reklam.aktif) {
+                const reklamEl = document.getElementById('reklam-alani');
+                document.getElementById('reklam-gorsel').src = AYARLAR.reklam.gorsel;
+                document.getElementById('reklam-metin').innerHTML = AYARLAR.reklam.metin;
+                document.getElementById('reklam-link').href = AYARLAR.reklam.link;
+                
+                // Sayfa yüklendikten 1.5 saniye sonra çıksın
+                setTimeout(() => {
+                    reklamEl.style.display = 'block';
+                }, 1500);
+            }
+
             const countDate = new Date(AYARLAR.hedefTarih).getTime();
             setInterval(() => {
                 const now = new Date().getTime();
@@ -299,10 +393,8 @@
             const icons = { gunesli:"☀️", karli:"❄️", yagmurlu:"🌧️", bulutlu:"☁️" };
             document.getElementById('w-icon').innerText = icons[sm.hava] || "☁️";
 
-            // Logo bulucu fonksiyon
             const getLogo = (name) => {
                 const team = AYARLAR.takimlar.find(t => t.ad === name);
-                // Eğer takım listede yoksa veya ismi 'Belirlenecek' ise placeholder döndür
                 return team ? team.logo : "https://via.placeholder.com/24/333/gold?text=?";
             };
 
@@ -352,8 +444,13 @@
                     <td class="puan-col">${t.p}</td>
                 </tr>`).join('');
         }
+        
+        // Reklamı kapatma fonksiyonu
+        function kapatReklam() {
+            document.getElementById('reklam-alani').style.display = 'none';
+        }
+
         window.onload = render;
     </script>
 </body>
 </html>
-
